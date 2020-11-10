@@ -42,7 +42,7 @@ fi
 read accesskeyid secretaccesskey sessiontoken expiration <<<$(echo $(aws sts assume-role-with-saml \
 	--role-arn arn:aws:iam::${ACCOUNTNUMBER}:role/${ROLE_NAME} \
 	--principal-arn arn:aws:iam::${ACCOUNTNUMBER}:saml-provider/${PROVIDER} \
-	--saml-assertion file://samlresponse.log | \
+	--saml-assertion file://${HOME}/tmp/samlresponse.log | \
 	jq '.Credentials | (.AccessKeyId, .SecretAccessKey, .SessionToken, .Expiration)' | \
        	tr -d '"'))
 
@@ -59,5 +59,6 @@ aws configure --profile $AWS_PROFILE set aws_access_key_id $accesskeyid
 aws configure --profile $AWS_PROFILE set aws_secret_access_key $secretaccesskey 
 aws configure --profile $AWS_PROFILE set aws_session_token $sessiontoken
 
+echo "AWS PROFILE: $AWS_PROFILE"
 aws --profile $AWS_PROFILE sts get-caller-identity
 # eof
